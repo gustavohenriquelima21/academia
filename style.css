@@ -1,0 +1,19 @@
+.bio-link-solid, .bio-link-outline {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bio-link-solid:hover {
+    transform: scale(1.03);
+    background-color: #ea580c; /* orange-600 darker */
+    box-shadow: 0 10px 15px -3px rgba(234, 88, 12, 0.3);
+}
+
+.bio-link-outline:hover {
+    transform: scale(1.03);
+    background-color: rgba(234, 88, 12, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(234, 88, 12, 0.2);
+}
+
+.bio-link-solid:active, .bio-link-outline:active {
+    transform: scale(0.98);
+}
