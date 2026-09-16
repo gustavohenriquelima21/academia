@@ -153,15 +153,15 @@
 
     <!-- HEADER -->
     <header class="flex flex-col items-center mb-10 text-center reveal" id="header">
-        <div class="relative mb-4">
+        <div class="relative mb-5">
             <div class="absolute -inset-1 bg-orange-600/20 rounded-full blur-xl opacity-70"></div>
 
-            <h1 class="text-5xl md:text-6xl font-black tracking-tighter leading-none relative z-10">
+            <h1 class="text-5xl md:text-6xl font-black tracking-tighter leading-[0.8] relative z-10">
                 <span class="text-4xl md:text-6xl font-michroma whitespace-nowrap text-white">TWENTY</span>
                 <span class="text-4xl md:text-6xl font-michroma whitespace-nowrap text-white">ONE</span>
                 <br>
-                <span class="text-xl md:text-2xl tracking-[0.3em] font-light text-orange-500 opacity-90 font-michroma">
-                    COMPANY
+                <span class="text-xl md:text-2xl tracking-[0.3em] font-light text-orange-500 opacity-90 font-michroma relative -top-4 inline-block">
+                COMPANY
                 </span>
             </h1>
         </div>
@@ -395,7 +395,7 @@
             generalElements.forEach((element, index) => {
                 setTimeout(() => {
                     element.classList.add('active');
-                }, 2400 + index * 150);
+                }, 2400 + index * 180);
             });
         }
 
