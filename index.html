@@ -67,9 +67,9 @@
             transform: translateY(20px);
             filter: blur(4px);
             transition:
-                opacity 0.9s ease,
-                transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-                filter 0.9s ease;
+                opacity 0.45s ease,
+                transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                filter 0.45s ease;
         }
 
         .reveal.active {
@@ -84,9 +84,9 @@
             transform: translateY(50px);
             filter: blur(5px);
             transition:
-                opacity 0.85s ease,
-                transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-                filter 0.85s ease;
+                opacity 0.425s ease,
+                transform 0.425s cubic-bezier(0.22, 1, 0.36, 1),
+                filter 0.425s ease;
         }
 
         .modality-reveal.active {
@@ -101,9 +101,9 @@
             transform: translateX(-70px);
             filter: blur(5px);
             transition:
-                opacity 0.85s ease,
-                transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-                filter 0.85s ease;
+                opacity 0.425s ease,
+                transform 0.425s cubic-bezier(0.22, 1, 0.36, 1),
+                filter 0.425s ease;
         }
 
         .button-reveal.active {
@@ -147,6 +147,49 @@
             box-shadow: 0 8px 20px rgba(234, 88, 12, 0.15);
         }
 
+        /* =================================
+           CARROSSEL DE FOTOS
+           ================================= */
+        .gym-carousel {
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+            padding: 0.25rem calc((100% - min(70vw, 250px)) / 2) 0.75rem;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .gym-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gym-carousel__item {
+            flex: 0 0 min(70vw, 250px);
+            height: 185px;
+            margin: 0;
+            overflow: hidden;
+            border: 1px solid rgba(234, 88, 12, 0.45);
+            border-radius: 1.25rem;
+            scroll-snap-align: center;
+            scroll-snap-stop: always;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        .gym-carousel__item img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        @media (min-width: 768px) {
+            .gym-carousel__item {
+                height: 210px;
+            }
+        }
+
         /* Acessibilidade: respeita redução de movimento */
         @media (prefers-reduced-motion: reduce) {
             .reveal,
@@ -182,6 +225,30 @@
             DESDE <span class="text-orange-500" style="font-family: 'Roboto-Medium', sans-serif; font-weight: 500; letter-spacing: 0.35em;">2001</span>
         </p>
     </header>
+
+    <!-- CARROSSEL: arraste para o lado no celular -->
+    <section class="w-full max-w-md mb-6 reveal" id="carousel-section" aria-label="Conheça a Twenty One Company">
+        <div class="gym-carousel" data-infinite-carousel>
+            <figure class="gym-carousel__item">
+                <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80" alt="Pessoa treinando musculação na academia" loading="lazy">
+            </figure>
+            <figure class="gym-carousel__item">
+                <img src="https://images.unsplash.com/photo-1554284126-aa88f22d8b74?auto=format&fit=crop&w=900&q=80" alt="Aula de treinamento em grupo" loading="lazy">
+            </figure>
+            <figure class="gym-carousel__item">
+                <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=80" alt="Atleta treinando na academia" loading="lazy">
+            </figure>
+            <figure class="gym-carousel__item">
+                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&q=80" alt="Treino de força com halteres" loading="lazy">
+            </figure>
+            <figure class="gym-carousel__item">
+                <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=900&q=80" alt="Pessoa praticando exercício funcional" loading="lazy">
+            </figure>
+            <figure class="gym-carousel__item">
+                <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&q=80" alt="Pessoa treinando em uma academia" loading="lazy">
+            </figure>
+        </div>
+    </section>
 
     <!-- MODALIDADES -->
     <div class="w-full max-w-md mb-12 overflow-hidden" id="modalities">
@@ -371,48 +438,106 @@
 
     <!-- SCRIPT DAS ANIMAÇÕES -->
     <script>
+        function makeCarouselInfinite() {
+            const carousel = document.querySelector('[data-infinite-carousel]');
+
+            if (!carousel) return;
+
+            const slides = Array.from(carousel.children);
+            const firstClone = slides[0].cloneNode(true);
+            const lastClone = slides[slides.length - 1].cloneNode(true);
+
+            firstClone.setAttribute('aria-hidden', 'true');
+            lastClone.setAttribute('aria-hidden', 'true');
+            carousel.append(firstClone);
+            carousel.prepend(lastClone);
+
+            const firstSlide = slides[0];
+            let scrollTimer;
+
+            const centeredPosition = (slide) => (
+                slide.offsetLeft - (carousel.clientWidth - slide.offsetWidth) / 2
+            );
+
+            const goToSlide = (slide) => {
+                carousel.scrollTo({ left: centeredPosition(slide), behavior: 'auto' });
+            };
+
+            const resetAtLoopEdge = () => {
+                const tolerance = 4;
+
+                if (Math.abs(carousel.scrollLeft - centeredPosition(lastClone)) <= tolerance) {
+                    goToSlide(slides[slides.length - 1]);
+                }
+
+                if (Math.abs(carousel.scrollLeft - centeredPosition(firstClone)) <= tolerance) {
+                    goToSlide(firstSlide);
+                }
+            };
+
+            requestAnimationFrame(() => {
+                goToSlide(firstSlide);
+            });
+
+            carousel.addEventListener('scroll', () => {
+                clearTimeout(scrollTimer);
+                scrollTimer = setTimeout(resetAtLoopEdge, 120);
+            }, { passive: true });
+        }
+
         function revealElements() {
             // Cabeçalho
             const header = document.querySelector('#header');
+            const carousel = document.querySelector('#carousel-section');
 
             if (header) {
                 setTimeout(() => {
                     header.classList.add('active');
-                }, 50);
+                }, 25);
             }
 
-            // Modalidades: entram uma por uma, de baixo para cima
+            // Carrossel: entra após o cabeçalho
+            if (carousel) {
+                setTimeout(() => {
+                    carousel.classList.add('active');
+                }, 500);
+            }
+
+            // Modalidades: entram após o carrossel, uma por uma
             const modalities = document.querySelectorAll('.modality-reveal');
 
             modalities.forEach((element, index) => {
                 setTimeout(() => {
                     element.classList.add('active');
-                }, 280 + index * 180);
+                }, 975 + index * 90);
             });
 
-            // Botões: entram um por um, da esquerda para a direita
+            // Botões: entram após todas as modalidades
             const buttons = document.querySelectorAll('.button-reveal');
 
             buttons.forEach((element, index) => {
                 setTimeout(() => {
                     element.classList.add('active');
-                }, 1350 + index * 180);
+                }, 1785 + index * 90);
             });
 
-            // Frase final e rodapé
+            // Frase final e rodapé: entram por último
             const generalElements = document.querySelectorAll(
-                '.reveal:not(#header)'
+                '.reveal:not(#header):not(#carousel-section)'
             );
 
             generalElements.forEach((element, index) => {
                 setTimeout(() => {
                     element.classList.add('active');
-                }, 2400 + index * 180);
+                }, 2775 + index * 90);
             });
         }
 
         // Inicia as animações quando a página carrega
-        window.addEventListener('load', revealElements);
+        window.addEventListener('load', () => {
+            makeCarouselInfinite();
+            revealElements();
+        });
     </script>
 
 </body>
