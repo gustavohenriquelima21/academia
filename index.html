@@ -453,7 +453,6 @@
             carousel.prepend(lastClone);
 
             const firstSlide = slides[0];
-            let scrollTimer;
 
             const centeredPosition = (slide) => (
                 slide.offsetLeft - (carousel.clientWidth - slide.offsetWidth) / 2
@@ -480,8 +479,7 @@
             });
 
             carousel.addEventListener('scroll', () => {
-                clearTimeout(scrollTimer);
-                scrollTimer = setTimeout(resetAtLoopEdge, 120);
+                resetAtLoopEdge();
             }, { passive: true });
         }
 
